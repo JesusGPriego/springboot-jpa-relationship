@@ -5,10 +5,12 @@ import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Setter;
 import lombok.Getter;
@@ -31,6 +33,8 @@ public class Client {
     private Set<Address> addresses;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private Set<Invoice> invoices;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ClientDetails clientDetails;
 
     public Client() {
         this.addresses = new HashSet<>();
@@ -46,7 +50,7 @@ public class Client {
     @Override
     public String toString() {
         return "Client: {id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses
-                + ", invoices=" + invoices + "}";
+                + ", invoices=" + invoices + ", clientDetails=" + clientDetails + "}";
     }
 
 }

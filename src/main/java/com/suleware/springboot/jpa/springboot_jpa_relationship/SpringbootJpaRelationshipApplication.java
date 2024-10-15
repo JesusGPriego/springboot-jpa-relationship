@@ -33,10 +33,31 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		listOne();
+		removeInvoiceBidirectional();
 	}
 
-	
+	@Transactional
+	public void removeInvoiceBidirectional() {
+		Optional<Client> oClient = clientRepository.findOne(1L);
+		oClient.ifPresent(client -> {
+			Invoice invoice1 = new Invoice("Asus TÜF Gaming", 150L);
+			client.getInvoices().add(invoice1);
+			invoice1.setClient(client);
+			clientRepository.save(client);
+		});
+		Optional<Client> optClient = clientRepository.findOne(1L);
+
+		optClient.ifPresent(client -> {
+			Long lastInvoiceId = client.getInvoices().stream().reduce((a, b) -> b).get().getId();
+			Optional<Invoice> optInvoice = invoiceRepository.findById(lastInvoiceId);
+			optInvoice.ifPresentOrElse(invoice -> {
+				client.getInvoices().remove(invoice);
+				invoice.setClient(null);
+				clientRepository.save(client);
+				System.out.println(client);
+			}, () -> System.out.println("nothing to delete"));
+		});
+	}
 
 	@Transactional
 	public void getClientDatafindByClientId() {

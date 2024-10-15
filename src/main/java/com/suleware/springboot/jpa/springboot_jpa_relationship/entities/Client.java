@@ -1,7 +1,7 @@
 package com.suleware.springboot.jpa.springboot_jpa_relationship.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -10,12 +10,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NonNull;
 
 @Entity
 @Table(name = "clients")
-@Data
+@Getter
+@Setter
 public class Client {
 
     @Id
@@ -26,10 +28,13 @@ public class Client {
     @NonNull
     private String lastname;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses;
+    private Set<Address> addresses;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    private Set<Invoice> invoices;
 
     public Client() {
-        this.addresses = new ArrayList<>();
+        this.addresses = new HashSet<>();
+        this.invoices = new HashSet<>();
     }
 
     public Client(String name, String lastname) {
@@ -37,4 +42,11 @@ public class Client {
         this.name = name;
         this.lastname = lastname;
     }
+
+    @Override
+    public String toString() {
+        return "Client: {id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses
+                + ", invoices=" + invoices + "}";
+    }
+
 }

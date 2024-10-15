@@ -1,6 +1,7 @@
 package com.suleware.springboot.jpa.springboot_jpa_relationship;
 
 import java.util.Optional;
+import java.util.Arrays;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -33,6 +34,41 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		listOne();
+	}
+
+	
+
+	@Transactional
+	public void getClientDatafindByClientId() {
+		Optional<Client> oClient = clientRepository.findOneClientWithInvoices(2L);
+		oClient.ifPresentOrElse(client -> {
+			Invoice invoice1 = new Invoice("Mac 14 pro M3", 3000L);
+			Invoice invoice2 = new Invoice("Lenovo Thinkpad X1 Carbon", 860L);
+
+			client.getInvoices().addAll(Arrays.asList(invoice1, invoice2));
+
+			client.getInvoices().forEach(invoice -> invoice.setClient(client));
+
+			Client updatedClient = clientRepository.save(client);
+			System.out.println(updatedClient);
+		}, () -> System.out.println("No client found"));
+	}
+
+	@Transactional
+	public void oneToManyBidirectional() {
+		Client newClient = new Client("Stephen", "Hawking");
+
+		Invoice invoice1 = new Invoice("Logitech 3s", 90L);
+		Invoice invoice2 = new Invoice("Surface 5", 860L);
+
+		newClient.getInvoices().addAll(Arrays.asList(invoice1, invoice2));
+
+		newClient.getInvoices().forEach(invoice -> invoice.setClient(newClient));
+
+		clientRepository.save(newClient);
+
+		System.out.println(newClient);
+
 	}
 
 	@Transactional(readOnly = true)

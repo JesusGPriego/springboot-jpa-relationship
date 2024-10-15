@@ -15,6 +15,6 @@ public interface ClientRepository extends CrudRepository<Client, Long> {
     @Query("SELECT c FROM Client c LEFT JOIN FETCH c.invoices WHERE c.id = :id")
     Optional<Client> findOneClientWithInvoices(Long id);
 
-    @Query("SELECT c FROM Client c LEFT JOIN FETCH c.invoices  LEFT JOIN FETCH c.addresses WHERE c.id = :id")
+    @Query("SELECT c FROM Client c LEFT JOIN FETCH c.invoices  LEFT JOIN FETCH c.addresses LEFT JOIN FETCH c.clientDetails WHERE c.id = :id")
     Optional<Client> findOne(Long id);
 }

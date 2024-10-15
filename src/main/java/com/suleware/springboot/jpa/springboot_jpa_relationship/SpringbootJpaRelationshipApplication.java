@@ -9,7 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.suleware.springboot.jpa.springboot_jpa_relationship.entities.Address;
 import com.suleware.springboot.jpa.springboot_jpa_relationship.entities.Client;
+import com.suleware.springboot.jpa.springboot_jpa_relationship.entities.ClientDetails;
 import com.suleware.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
+import com.suleware.springboot.jpa.springboot_jpa_relationship.repositories.ClientDetailsRepository;
 import com.suleware.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
 import com.suleware.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
 
@@ -21,8 +23,10 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	private ClientRepository clientRepository;
 	private InvoiceRepository invoiceRepository;
 
-	public SpringbootJpaRelationshipApplication(ClientRepository clientRepository,
-			InvoiceRepository invoiceRepository) {
+	public SpringbootJpaRelationshipApplication(
+			ClientRepository clientRepository,
+			InvoiceRepository invoiceRepository,
+			ClientDetailsRepository clientDetailsRepository) {
 		this.clientRepository = clientRepository;
 		this.invoiceRepository = invoiceRepository;
 	}
@@ -33,7 +37,21 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeInvoiceBidirectional();
+		oneToOneExistent();
+	}
+
+	@Transactional
+	public void oneToOneExistent() {
+
+	}
+
+	@Transactional
+	public void oneToOne() {
+		Client newClient = new Client("Mary", "Poppins");
+		ClientDetails newClientDetails = new ClientDetails(true, 1000);
+		newClient.setClientDetails(newClientDetails);
+		Client c = clientRepository.save(newClient);
+		System.out.println(c);
 	}
 
 	@Transactional
